@@ -24,8 +24,6 @@ if uploaded_files and job_description:
     # Run ranking
     with st.spinner("🔍 Ranking resumes..."):
         ranked_results = rank_resumes(temp_files, job_description)
-    st.write("Debugging Output:", ranked_results)
-
 
     # Display ranked resumes
     st.subheader("🏆 Ranked Resumes:")

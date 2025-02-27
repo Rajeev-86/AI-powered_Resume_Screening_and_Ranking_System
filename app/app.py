@@ -1,5 +1,10 @@
 import streamlit as st
-from source import extract_text, preprocess_text, correct_text, rank_resumes
+import os
+import sys
+# To import the source module from src
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(BASE_DIR)
+from src.source import extract_text, preprocess_text, correct_text, rank_resumes
 
 st.title("AI Resume Ranking System")
 

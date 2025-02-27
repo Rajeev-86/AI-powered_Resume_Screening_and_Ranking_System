@@ -1,7 +1,7 @@
 import fitz  # Using PyMuPDF as it's faster and would be better if there are thousand+ resumes to be ranked
-import pytesseract  # If the resume is scanned image
+import pytesseract  # If the resume is a scanned image
 from pdf2image import convert_from_path
-from docx import Document  #using python-docs because extracts with proper formatting and maintains the text order
+from docx import Document  # Using python-docx because it extracts with proper formatting and maintains text order
 import pdfplumber
 from pathlib import Path
 import re
@@ -11,21 +11,28 @@ from spellchecker import SpellChecker
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Check if stopwords are already downloaded
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    nltk.download("stopwords")
+
+stop_words = set(stopwords.words("english"))
 
 def extract_text_from_resume(pdf_path):
     doc = fitz.open(pdf_path)
-    text = "\n".join([page.get_text("text") for page in doc])
+    text = "\n".join([page.get_text("text") for page in doc]).strip()
     return text
 
 def extract_text_from_image_pdf(pdf_path):
     images = convert_from_path(pdf_path)
     text = "\n".join([pytesseract.image_to_string(img).strip() for img in images])
-    text = re.sub(r"\s+", " ", text)  # Normalize spaces
+    text = re.sub(r"\s+", " ", text).strip()  # Normalize spaces
     return text
 
 def extract_text_from_docx(docx_path):
     doc = Document(docx_path)
-    text = "\n".join([para.text for para in doc.paragraphs])
+    text = "\n".join([para.text.strip() for para in doc.paragraphs]).strip()
     return text
 
 def is_pdf_scanned(pdf_path):
@@ -49,20 +56,12 @@ def extract_text(file_path):
     else:
         raise ValueError("Unsupported file format. Only PDF and DOCX are supported.")
         
-# Download stopwords if not already downloaded
-nltk.download("stopwords")
-stop_words = set(stopwords.words("english"))
-
 def preprocess_text(text, remove_stopwords=True):
-
-    # Convert to lowercase
+    """Lowercases text, removes special characters, and optionally removes stopwords."""
     text = text.lower()
-
-    # Remove special characters, punctuation, and extra spaces
     text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
-
-    # Remove stopwords if enabled
+    
     if remove_stopwords:
         text = " ".join(word for word in text.split() if word not in stop_words)
 
@@ -72,25 +71,16 @@ def preprocess_text(text, remove_stopwords=True):
 spell = SpellChecker()
 
 def correct_text(text):
-
-    # Convert to lowercase
+    """Corrects spelling errors in the text."""
     text = text.lower()
-
-    # Remove special characters and extra spaces
     text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    # Tokenize text into words
     words = text.split()
-
-    # Correct misspelled words
     unknown_words = spell.unknown(words)
     corrected_words = [spell.correction(word) if word in unknown_words and spell.correction(word) else word for word in words]
 
-    # Join corrected words back into a sentence
-    corrected_text = " ".join(corrected_words)
-
-    return corrected_text
+    return " ".join(corrected_words)
 
 # Load SBERT model
 model = SentenceTransformer('all-MiniLM-L6-v2')  # Lightweight and efficient
@@ -112,12 +102,14 @@ def rank_resumes(resume_files, job_description):
         resume_text = correct_text(resume_text)
         
         resume_embedding = model.encode([resume_text], normalize_embeddings=True)
-        similarity_score = cosine_similarity(resume_embedding, job_embedding)[0][0]
+        similarity_score = resume_embedding @ job_embedding.T  # Use dot product instead of cosine similarity
         
-        ranked_resumes.append((file.name, similarity_score))
+        ranked_resumes.append((Path(file).name, similarity_score))
 
     # Sort resumes by similarity score in descending order
     ranked_resumes.sort(key=lambda x: x[1], reverse=True)
-    
 
-print("jai_hind") # Debug step
+    return ranked_resumes  # Return ranked results
+
+# Debugging Step
+print("jai_hind")

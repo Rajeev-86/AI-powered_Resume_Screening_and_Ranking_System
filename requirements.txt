@@ -8,4 +8,4 @@ https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.8.
 pyspellchecker
 sentence-transformers
 scikit-learn
-
+nltk

@@ -9,6 +9,7 @@ import nltk
 from nltk.corpus import stopwords
 from spellchecker import SpellChecker
 from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def extract_text_from_resume(pdf_path):
@@ -18,7 +19,8 @@ def extract_text_from_resume(pdf_path):
 
 def extract_text_from_image_pdf(pdf_path):
     images = convert_from_path(pdf_path)
-    text = "\n".join([pytesseract.image_to_string(img) for img in images])
+    text = "\n".join([pytesseract.image_to_string(img).strip() for img in images])
+    text = re.sub(r"\s+", " ", text)  # Normalize spaces
     return text
 
 def extract_text_from_docx(docx_path):
@@ -82,7 +84,8 @@ def correct_text(text):
     words = text.split()
 
     # Correct misspelled words
-    corrected_words = [spell.correction(word) if word in spell.unknown(words) and spell.correction(word) is not None else word for     word in words]
+    unknown_words = spell.unknown(words)
+    corrected_words = [spell.correction(word) if word in unknown_words and spell.correction(word) else word for word in words]
 
     # Join corrected words back into a sentence
     corrected_text = " ".join(corrected_words)
@@ -94,16 +97,21 @@ model = SentenceTransformer('all-MiniLM-L6-v2')  # Lightweight and efficient
 
 def rank_resumes(resume_files, job_description):
     """Ranks multiple resumes based on similarity to job description."""
-    job_embedding = model.encode([job_description])
+    job_embedding = model.encode([job_description], normalize_embeddings=True)
 
     ranked_resumes = []
     
     for file in resume_files:
-        resume_text = extract_text(file)
+        try:
+            resume_text = extract_text(file)
+        except Exception as e:
+            print(f"Error processing {file}: {e}")
+            continue  # Skip this resume
+            
         resume_text = preprocess_text(resume_text)
         resume_text = correct_text(resume_text)
         
-        resume_embedding = model.encode([resume_text])
+        resume_embedding = model.encode([resume_text], normalize_embeddings=True)
         similarity_score = cosine_similarity(resume_embedding, job_embedding)[0][0]
         
         ranked_resumes.append((file.name, similarity_score))

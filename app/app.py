@@ -30,7 +30,7 @@ if uploaded_files and job_description:
     # Display ranked resumes
     st.subheader("🏆 Ranked Resumes:")
     for rank, (resume_name, score) in enumerate(ranked_results, start=1):
-        st.write(f"**{rank}. {os.path.basename(resume_name)}** - Similarity Score: {score:.2f}")
+        st.write(f"**{rank}. {os.path.basename(resume_name) if resume_name else 'Unknown'}** - Similarity Score: {score:.2f}")
 
     # Cleanup temp files
     for temp_path in temp_files:

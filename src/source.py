@@ -102,7 +102,7 @@ def rank_resumes(resume_files, job_description):
         resume_text = correct_text(resume_text)
         
         resume_embedding = model.encode([resume_text], normalize_embeddings=True)
-        similarity_score = resume_embedding @ job_embedding.T  # Use dot product instead of cosine similarity
+        similarity_score = resume_embedding @ job_embedding.T  # Using dot product instead of cosine similarity 
         
         ranked_resumes.append((Path(file).name, similarity_score))
 

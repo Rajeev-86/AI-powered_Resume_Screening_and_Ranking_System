@@ -13,16 +13,23 @@ uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept
 job_description = st.text_area("Enter Job Description")
 
 if uploaded_files and job_description:
-    # Preserve original filenames
-    temp_files = [(file.name, file) for file in uploaded_files]
-    
+    temp_files = []  # List to store temp file paths
+
+    for uploaded_file in uploaded_files:
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
+            temp.write(uploaded_file.read())  # Write uploaded content to temp file
+            temp_files.append(temp.name)  # Store temp file path
+
+    # Run ranking
     with st.spinner("🔍 Ranking resumes..."):
         ranked_results = rank_resumes(temp_files, job_description)
 
-    try:
-        st.subheader("🏆 Ranked Resumes:")
-        for rank, (resume_name, score) in enumerate(ranked_results, start=1):
-            st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
-    except Exception as e:
-        st.error(f"Error displaying ranked results: {e}")
+    # Display ranked resumes
+    st.subheader("🏆 Ranked Resumes:")
+    for rank, (resume_name, score) in enumerate(ranked_results, start=1):
+        st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
 
+    # Cleanup temp files
+    for temp_path in temp_files:
+        os.remove(temp_path)

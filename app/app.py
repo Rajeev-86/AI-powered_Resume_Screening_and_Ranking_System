@@ -6,7 +6,7 @@ import io
 # Import the source module
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(BASE_DIR)
-from src.source import extract_text, preprocess_text, correct_text, rank_resumes
+from src.source import extract_text, preprocess_text, rank_resumes
 
 st.title("📄 AI Resume Screening & Ranking System")
 

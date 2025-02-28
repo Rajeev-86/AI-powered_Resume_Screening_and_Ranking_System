@@ -19,6 +19,10 @@ if uploaded_files and job_description:
     with st.spinner("🔍 Ranking resumes..."):
         ranked_results = rank_resumes(temp_files, job_description)
 
-    st.subheader("🏆 Ranked Resumes:")
-    for rank, (resume_name, score) in enumerate(ranked_results, start=1):
-        st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+    try:
+        st.subheader("🏆 Ranked Resumes:")
+        for rank, (resume_name, score) in enumerate(ranked_results, start=1):
+            st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+    except Exception as e:
+        st.error(f"Error displaying ranked results: {e}")
+

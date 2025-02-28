@@ -7,9 +7,10 @@ import io
 st.markdown(
     """
     <style>
-    /* Apply background to the main container */
+    /* Apply background with a dark overlay */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://images4.alphacoders.com/133/thumb-1920-1336369.jpeg");
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url("https://images4.alphacoders.com/133/thumb-1920-1336369.jpeg");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;

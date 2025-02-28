@@ -37,5 +37,5 @@ if uploaded_files and job_description:
         st.error(f"⚠️ Error processing resumes: {e}")
 
     finally:
-        for temp_path in temp_files.keys():
+        for temp_path in temp_files:
             os.remove(temp_path)

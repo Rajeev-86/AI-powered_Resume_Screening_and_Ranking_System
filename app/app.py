@@ -29,8 +29,12 @@ if uploaded_files and job_description:
             print(ranked_results)  # Debugging step
     
         st.subheader("🏆 Ranked Resumes:")
-        for rank, (resume_name, score) in enumerate(ranked_results, start=1):
-            st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+        for rank, result in enumerate(ranked_results, start=1):
+            if len(result) == 2:  # Expected format (resume_name, score)
+                resume_name, score = result
+                st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+            else:
+                st.write(f"⚠️ Unexpected data format: {result}")  # Debugging output
 
     except Exception as e:
         st.error(f"⚠️ Error processing resumes: {e}")

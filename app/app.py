@@ -2,12 +2,15 @@ import streamlit as st
 import os
 import sys
 import io
+# Import the source module
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(BASE_DIR)
+from src.source import extract_text, preprocess_text, rank_resumes
 
 # Custom CSS to add a background image
 st.markdown(
     """
     <style>
-    /* Apply background with a dark overlay */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                     url("https://images4.alphacoders.com/133/thumb-1920-1336369.jpeg");
@@ -19,12 +22,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-
-# Import the source module
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(BASE_DIR)
-from src.source import extract_text, preprocess_text, rank_resumes
 
 st.title("📄 AI Resume Screening & Ranking System")
 

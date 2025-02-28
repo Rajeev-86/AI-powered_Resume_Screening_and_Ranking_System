@@ -94,7 +94,7 @@ def rank_resumes(resume_files, job_description):
     
     for original_name, file_path in resume_files:  # Unpacking tuple (original_name, temp_path)
         try:
-            resume_text = extract_text(file_path)
+            resume_text = extract_text(file_path)  # Corrected variable name
         except Exception as e:
             print(f"Error processing {original_name}: {e}")
             continue  # Skip this resume

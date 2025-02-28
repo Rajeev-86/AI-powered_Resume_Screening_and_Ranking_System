@@ -44,18 +44,31 @@ def is_pdf_scanned(pdf_path):
                 return False  # Found text, so it's not scanned
     return True  # No text found, it's a scanned PDF
 
-def extract_text(file_path):
-    ext = Path(file_path).suffix.lower()
+def extract_text(file_obj, filename):
+    """Extracts text from a file object (PDF or DOCX) stored in memory."""
+    ext = Path(filename).suffix.lower()
 
     if ext == ".pdf":
-        if is_pdf_scanned(file_path):
-            return extract_text_from_image_pdf(file_path)  # Use OCR
-        else:
-            return extract_text_from_resume(file_path)  # Use PyMuPDF
+        try:
+            with pdfplumber.open(file_obj) as pdf:
+                text = "\n".join([page.extract_text() or "" for page in pdf.pages]).strip()
+            if not text:
+                file_obj.seek(0)  # Reset BytesIO pointer
+                images = convert_from_path(file_obj)
+                text = "\n".join([pytesseract.image_to_string(img).strip() for img in images])
+            return text
+        except Exception:
+            return extract_text_from_image_pdf(file_obj)  # Use OCR fallback
+
     elif ext == ".docx":
-        return extract_text_from_docx(file_path)
+        file_obj.seek(0)  # Reset pointer before reading
+        doc = Document(file_obj)
+        text = "\n".join([para.text.strip() for para in doc.paragraphs]).strip()
+        return text
+
     else:
         raise ValueError("Unsupported file format. Only PDF and DOCX are supported.")
+
         
 def preprocess_text(text, remove_stopwords=True):
     """Lowercases text, removes special characters, and optionally removes stopwords."""
@@ -92,26 +105,23 @@ def rank_resumes(resume_files, job_description):
 
     ranked_resumes = []
     
-    for file in resume_files:
+    for filename, file_obj in resume_files.items():
         try:
-            resume_text = extract_text(file)
+            resume_text = extract_text(file_obj, filename)
         except Exception as e:
-            print(f"Error processing {file}: {e}")
+            print(f"Error processing {filename}: {e}")
             continue  # Skip this resume
             
         resume_text = preprocess_text(resume_text)
         resume_text = correct_text(resume_text)
         
         resume_embedding = model.encode([resume_text], normalize_embeddings=True)
-        similarity_score = float(resume_embedding @ job_embedding.T)  # Using dot product instead of cosine similarity 
+        similarity_score = float(resume_embedding @ job_embedding.T)  # Using dot product 
         
-        ranked_resumes.append((Path(file).name, float(similarity_score)))
+        ranked_resumes.append((filename, similarity_score))
 
     # Sort resumes by similarity score in descending order
     ranked_resumes.sort(key=lambda x: x[1], reverse=True)
     print(ranked_resumes)  # Debugging step
 
     return ranked_resumes  # Return ranked results
-
-# Debugging Step
-print("jai_hind")

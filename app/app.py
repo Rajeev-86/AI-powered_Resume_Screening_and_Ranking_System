@@ -24,7 +24,6 @@ if uploaded_files and job_description:
                 temp.write(uploaded_file.read())
                 temp_files.append(temp.name)
 
-    try:
         with st.spinner("🔍 Ranking resumes..."):
             ranked_results = rank_resumes(temp_files, job_description)
     
@@ -32,9 +31,9 @@ if uploaded_files and job_description:
         for rank, (resume_name, score) in enumerate(ranked_results, start=1):
             st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
 
-except Exception as e:
-    st.error(f"⚠️ Error processing resumes: {e}")
+    except Exception as e:
+        st.error(f"⚠️ Error processing resumes: {e}")
 
-finally:
-    for temp_path in temp_files:
-        os.remove(temp_path)
+    finally:
+        for temp_path in temp_files:
+            os.remove(temp_path)

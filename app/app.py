@@ -19,12 +19,12 @@ if uploaded_files and job_description:
     for uploaded_file in uploaded_files:
         with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
             temp.write(uploaded_file.read())
-            temp_files[os.path.basename(temp.name)] = uploaded_file.name  # Store only the basename
+            temp_files[temp.name] = uploaded_file.name  # Store full path as key
 
     
     try:
         with st.spinner("🔍 Ranking resumes..."):
-            ranked_results = rank_resumes(list(temp_files.keys()), job_description)  # Pass list of temp filenames
+            ranked_results = rank_resumes(list(temp_files.keys()), job_description)
     
         st.subheader("🏆 Ranked Resumes:")
         for rank, (temp_path, score) in enumerate(ranked_results, start=1):
@@ -38,4 +38,5 @@ if uploaded_files and job_description:
     
     finally:
         for temp_path in temp_files.keys():
-            os.remove(temp_path)  # Cleanup temp files
+            if os.path.exists(temp_path):  # Prevent FileNotFoundError
+                os.remove(temp_path)

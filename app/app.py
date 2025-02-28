@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-import tempfile
+import pandas as pd
 import sys
 # To import the source module from src
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -11,25 +11,19 @@ st.title("AI Resume Ranking System")
 
 uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept_multiple_files=True)
 job_description = st.text_area("Enter Job Description")
-
+        
 if uploaded_files and job_description:
-    temp_files = []  # List to store temp file paths
+    st.header("Ranking Resumes")
 
-    for uploaded_file in uploaded_files:
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
-            temp.write(uploaded_file.read())  # Write uploaded content to temp file
-            temp_files.append(temp.name)  # Store temp file path
+    resumes = []
+    for file in uploaded_files:
+        resumes.append(file)
 
-    # Run ranking
-    with st.spinner("🔍 Ranking resumes..."):
-        ranked_results = rank_resumes(temp_files, job_description)
+    # Rank resumes
+    scores = rank_resumes(job_description, resumes)
 
-    # Display ranked resumes
-    st.subheader("🏆 Ranked Resumes:")
-    for rank, (resume_name, score) in enumerate(ranked_results, start=1):
-        st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+    # Display scores
+    results = pd.DataFrame({"Resume": [file.name for file in uploaded_files], "Score": score })
+    results = results.sort_values(by="Score", ascending=False)
 
-    # Cleanup temp files
-    for temp_path in temp_files:
-        os.remove(temp_path)
+    st.write(results)

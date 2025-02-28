@@ -9,3 +9,4 @@ pyspellchecker
 sentence-transformers
 scikit-learn
 nltk
+pandas

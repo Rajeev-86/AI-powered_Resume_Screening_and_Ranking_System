@@ -92,21 +92,25 @@ def rank_resumes(resume_files, job_description):
 
     ranked_resumes = []
     
-    for original_name, file_path in resume_files:  
+    for file in resume_files:
         try:
-            resume_text = extract_text(file_path)  # ✅ Use correct variable
+            resume_text = extract_text(file)
         except Exception as e:
-            print(f"Error processing {original_name}: {e}")
-            continue  
+            print(f"Error processing {file}: {e}")
+            continue  # Skip this resume
             
         resume_text = preprocess_text(resume_text)
         resume_text = correct_text(resume_text)
         
         resume_embedding = model.encode([resume_text], normalize_embeddings=True)
-        similarity_score = float(resume_embedding @ job_embedding.T)  
+        similarity_score = float(resume_embedding @ job_embedding.T)  # Using dot product instead of cosine similarity 
         
-        ranked_resumes.append((original_name, similarity_score))  
+        ranked_resumes.append((Path(file).name, float(similarity_score)))
 
+    # Sort resumes by similarity score in descending order
     ranked_resumes.sort(key=lambda x: x[1], reverse=True)
 
-    return ranked_resumes  
+    return ranked_resumes  # Return ranked results
+
+# Debugging Step
+print("jai_hind")

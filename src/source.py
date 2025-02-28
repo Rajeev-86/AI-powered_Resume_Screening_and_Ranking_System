@@ -109,6 +109,7 @@ def rank_resumes(resume_files, job_description):
 
     # Sort resumes by similarity score in descending order
     ranked_resumes.sort(key=lambda x: x[1], reverse=True)
+    print(ranked_resumes)  # Debugging step
 
     return ranked_resumes  # Return ranked results
 

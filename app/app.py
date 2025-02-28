@@ -21,7 +21,8 @@ if uploaded_files and job_description:
     resume_data = {file.name: io.BytesIO(file.read()) for file in uploaded_files}
 
     # Rank resumes
-    ranked_results = rank_resumes(resume_data, job_description)
+    with st.spinner("🔍 Ranking resumes..."):
+        ranked_results = rank_resumes(resume_data, job_description)
 
     # Display results
     st.subheader("🏆 Ranked Resumes:")

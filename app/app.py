@@ -22,19 +22,17 @@ if uploaded_files and job_description:
         for uploaded_file in uploaded_files:
             with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
                 temp.write(uploaded_file.read())
-                temp_files.append(temp.name)
+                temp_files[temp.name] = uploaded_file.name
 
         with st.spinner("🔍 Ranking resumes..."):
-            ranked_results = rank_resumes(temp_files, job_description)
+            ranked_results = rank_resumes(temp_files.keys(), job_description)
     
         st.subheader("🏆 Ranked Resumes:")
-        st.write(f"Debugging: {ranked_results}")  # Check output in Streamlit UI
-        print("Ranked Results:", ranked_results)  # Check terminal output
 
         for rank, result in enumerate(ranked_results, start=1):
             if len(result) == 2:  # Expected format (resume_name, score)
-                resume_name, score = result
-                st.write(f"**{rank}. {resume_name}** - Similarity Score: {score:.2f}")
+                original_name = temp_files.get(temp_path, temp_path)  # Get original name or fallback to temp path
+                st.write(f"**{rank}. {original_name}** - Similarity Score: {score:.2f}")
             else:
                 st.write(f"⚠️ Unexpected data format: {result}")  # Debugging output
 

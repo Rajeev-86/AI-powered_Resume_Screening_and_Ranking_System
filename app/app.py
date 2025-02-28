@@ -30,12 +30,12 @@ if uploaded_files and job_description:
         st.subheader("🏆 Ranked Resumes:")
 
         for rank, (temp_path, score) in enumerate(ranked_results, start=1):
-            original_name = temp_files[temp_path]  # Get original filename from dictionary
+            original_name = temp_files.get(temp_path, "Unknown")
             st.write(f"**{rank}. {original_name}** - Similarity Score: {score:.2f}")
 
     except Exception as e:
         st.error(f"⚠️ Error processing resumes: {e}")
 
     finally:
-        for temp_path in temp_files:
+        for temp_path in temp_files.keys():
             os.remove(temp_path)

@@ -14,12 +14,12 @@ uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept
 job_description = st.text_area("Enter Job Description")
 
 if uploaded_files and job_description:
-    resume_files = []  # List to store (original_name, temp_path) tuples
+    resume_files = []  # Store (original_name, temp_file_path)
 
-    for uploaded_file in uploaded_files:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
-            temp.write(uploaded_file.read())  # Save uploaded file to temp storage
-            resume_files.append((uploaded_file.name, temp.name))  # Store original name and temp file path
+for uploaded_file in uploaded_files:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
+        temp.write(uploaded_file.read())  
+        resume_files.append((uploaded_file.name, temp.name))  # Store tuple (original name, temp path)
 
     # Run ranking
     with st.spinner("🔍 Ranking resumes..."):

@@ -8,14 +8,19 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(BASE_DIR)
 from src.source import extract_text, preprocess_text, correct_text, rank_resumes
 
-st.title("AI Resume Ranking System")
+st.title("📄 AI Resume Screening & Ranking System")
 
+# Upload Resumes
 uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept_multiple_files=True)
-job_description = st.text_area("Enter Job Description")
-if uploaded_files:
+
+# Input Job Description
+job_description = st.text_area("Enter Job Description", placeholder="Paste the job description here...")
+
+if uploaded_files and job_description:
+    # Convert uploaded files into {filename: BytesIO} dictionary
     resume_data = {file.name: io.BytesIO(file.read()) for file in uploaded_files}
 
-    # Now pass `resume_data` (dictionary of {filename: file_content}) to `rank_resumes`
+    # Rank resumes
     ranked_results = rank_resumes(resume_data, job_description)
 
     # Display results

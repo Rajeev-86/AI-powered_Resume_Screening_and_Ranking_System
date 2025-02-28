@@ -27,9 +27,8 @@ if uploaded_files and job_description:
             ranked_results = rank_resumes(list(temp_files.keys()), job_description)
     
         st.subheader("🏆 Ranked Resumes:")
-        for rank, (temp_path, score) in enumerate(ranked_results, start=1):
-            temp_basename = os.path.basename(temp_path)  # Extract filename only
-            original_name = temp_files.get(temp_basename, "Unknown")  # Match with stored filenames
+        for rank, (temp_name, score) in enumerate(ranked_results, start=1):
+            original_name = temp_files.get(temp_name, "Unknown")  # Get original name
             st.write(f"**{rank}. {original_name}** - Similarity Score: {score:.2f}")
 
     

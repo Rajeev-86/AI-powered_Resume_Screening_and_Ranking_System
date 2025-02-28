@@ -18,11 +18,11 @@ job_description = st.text_area("Enter Job Description")
 
 if uploaded_files and job_description:
     try:
-    temp_files = []
-    for uploaded_file in uploaded_files:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
-            temp.write(uploaded_file.read())
-            temp_files.append(temp.name)
+        temp_files = []
+        for uploaded_file in uploaded_files:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as temp:
+                temp.write(uploaded_file.read())
+                temp_files.append(temp.name)
 
     try:
         with st.spinner("🔍 Ranking resumes..."):

@@ -3,6 +3,22 @@ import os
 import sys
 import io
 
+# Custom CSS to add a background image
+st.markdown(
+    """
+    <style>
+    body {
+        background-image: url("https://images4.alphacoders.com/133/thumb-1920-1336369.jpeg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Import the source module
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(BASE_DIR)

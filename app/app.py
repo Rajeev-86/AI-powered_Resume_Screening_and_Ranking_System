@@ -26,6 +26,7 @@ if uploaded_files and job_description:
 
         with st.spinner("🔍 Ranking resumes..."):
             ranked_results = rank_resumes(temp_files, job_description)
+            print(ranked_results)  # Debugging step
     
         st.subheader("🏆 Ranked Resumes:")
         for rank, (resume_name, score) in enumerate(ranked_results, start=1):

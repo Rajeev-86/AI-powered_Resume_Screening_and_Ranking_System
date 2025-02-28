@@ -7,7 +7,8 @@ import io
 st.markdown(
     """
     <style>
-    body {
+    /* Apply background to the main container */
+    [data-testid="stAppViewContainer"] {
         background-image: url("https://images4.alphacoders.com/133/thumb-1920-1336369.jpeg");
         background-size: cover;
         background-position: center;

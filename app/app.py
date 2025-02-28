@@ -11,6 +11,7 @@ from src.source import extract_text, preprocess_text, correct_text, rank_resumes
 st.title("AI Resume Ranking System")
 
 uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept_multiple_files=True)
+job_description = st.text_area("Enter Job Description")
 if uploaded_files:
     resume_data = {file.name: io.BytesIO(file.read()) for file in uploaded_files}
 

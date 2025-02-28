@@ -26,9 +26,11 @@ if uploaded_files and job_description:
 
         with st.spinner("🔍 Ranking resumes..."):
             ranked_results = rank_resumes(temp_files, job_description)
-            print(ranked_results)  # Debugging step
     
         st.subheader("🏆 Ranked Resumes:")
+        st.write(f"Debugging: {ranked_results}")  # Check output in Streamlit UI
+        print("Ranked Results:", ranked_results)  # Check terminal output
+
         for rank, result in enumerate(ranked_results, start=1):
             if len(result) == 2:  # Expected format (resume_name, score)
                 resume_name, score = result

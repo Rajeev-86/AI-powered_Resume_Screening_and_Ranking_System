@@ -25,16 +25,13 @@ if uploaded_files and job_description:
                 temp_files[temp.name] = uploaded_file.name
 
         with st.spinner("🔍 Ranking resumes..."):
-            ranked_results = rank_resumes(temp_files.keys(), job_description)
+            ranked_results = rank_resumes(list(temp_files.keys()), job_description)
     
         st.subheader("🏆 Ranked Resumes:")
 
-        for rank, result in enumerate(ranked_results, start=1):
-            if len(result) == 2:  # Expected format (resume_name, score)
-                original_name = temp_files.get(temp_path, temp_path)  # Get original name or fallback to temp path
-                st.write(f"**{rank}. {original_name}** - Similarity Score: {score:.2f}")
-            else:
-                st.write(f"⚠️ Unexpected data format: {result}")  # Debugging output
+        for rank, (temp_path, score) in enumerate(ranked_results, start=1):
+            original_name = temp_files[temp_path]  # Get original filename from dictionary
+            st.write(f"**{rank}. {original_name}** - Similarity Score: {score:.2f}")
 
     except Exception as e:
         st.error(f"⚠️ Error processing resumes: {e}")

@@ -61,7 +61,7 @@ def preprocess_text(text, remove_stopwords=True):
     return text
 
 # Load SBERT model
-model = SentenceTransformer('all-MiniLM-L6-v2')  # Lightweight and efficient
+model = SentenceTransformer('all-mpnet-base-v2')
 
 def rank_resumes(resume_files, job_description):
     """Ranks multiple resumes based on similarity to job description."""

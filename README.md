@@ -1,4 +1,4 @@
-# AI Resume Screening and Ranking System
+# AI Powered Resume Screening and Ranking System
 
 ## Overview
 The **AI Resume Screening and Ranking System** is an automated solution that leverages Natural Language Processing (NLP) and machine learning techniques to rank resumes based on their relevance to a given job description. This system improves efficiency in recruitment by reducing manual effort and bias while ensuring accurate candidate evaluation.

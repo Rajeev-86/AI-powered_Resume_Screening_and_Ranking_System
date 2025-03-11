@@ -33,6 +33,10 @@ Ensure you have Python 3.8+ installed.
 2. Provide a job description.
 3. The system processes the resumes, ranks them based on similarity, and displays the results.
 
+## Live Demo
+You can access the AI Resume Screening and Ranking System here:  
+🔗 **[Live Web App](https://ai-powered-resume-screening-and-ranking-app-by-rajeev.streamlit.app/)**  
+
 ## Technologies Used
 - **Python** (Core programming language)
 - **Streamlit** (Web application framework)
